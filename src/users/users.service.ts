@@ -7,7 +7,10 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(@InjectRepository(UsersEntity) private usersRepository: Repository<UsersEntity>) { }
+  constructor(
+    @InjectRepository(UsersEntity)
+    private usersRepository: Repository<UsersEntity>,
+  ) {}
 
   async showAll(): Promise<UsersEntity[]> {
     return await this.usersRepository.find();
@@ -15,8 +18,8 @@ export class UsersService {
 
   async create(data: CreateUserDTO) {
     const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(data.password, salt)
-    data.password = hash
+    const hash = bcrypt.hashSync(data.password, salt);
+    data.password = hash;
     const user = this.usersRepository.save(data);
     return user;
   }
@@ -33,28 +36,25 @@ export class UsersService {
     try {
       const data = await this.usersRepository.findOne({
         where: {
-          username: username
-        }
-      })
+          username: username,
+        },
+      });
       return data;
-    } catch (error) {
-
-    }
-
+    } catch (error) {}
   }
 
   async read(id: number) {
     return await this.usersRepository.findOne({
       where: {
-        id: id
-      }
+        id: id,
+      },
     });
   }
 
   async update(id: number, data: Partial<CreateUserDTO>) {
     const salt = bcrypt.genSaltSync(10);
-    const hash = bcrypt.hashSync(data.password, salt)
-    data.password = hash
+    const hash = bcrypt.hashSync(data.password, salt);
+    data.password = hash;
     await this.usersRepository.update({ id }, data);
   }
 

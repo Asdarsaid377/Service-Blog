@@ -1,6 +1,13 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Length } from "class-validator"
-import { Currency } from "src/commons/enum/currency.enum";
-import { Role } from "src/commons/enum/role.enum";
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { Currency } from 'src/commons/enum/currency.enum';
+import { Role } from 'src/commons/enum/role.enum';
 
 export class CreateUserDTO {
   @IsNotEmpty()
@@ -21,12 +28,12 @@ export class CreateUserDTO {
   phone: string;
 
   @IsEnum(Role, {
-    message: "Invalid parameter role"
+    message: 'Invalid parameter role',
   })
   role: Role;
 
   @IsEnum(Currency, {
-    message: "Invalid paramter currency"
+    message: 'Invalid paramter currency',
   })
   @IsOptional()
   currency: Currency;
@@ -45,7 +52,7 @@ export class CreateUserDTO {
 
   @IsNumber()
   @IsOptional()
-  balance: number
+  balance: number;
 
   @IsNumber()
   @IsOptional()
@@ -54,5 +61,4 @@ export class CreateUserDTO {
   @IsNumber()
   @IsOptional()
   parent: number;
-
 }

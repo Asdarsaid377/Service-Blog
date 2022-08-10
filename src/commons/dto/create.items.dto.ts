@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber } from "class-validator"
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class ItemsDTO {
   id?: number;
@@ -14,7 +14,7 @@ export class ItemsDTO {
 
   @IsNotEmpty()
   @IsNumber()
-  harga: number
+  harga: number;
 
   @IsNotEmpty()
   @IsNumber()

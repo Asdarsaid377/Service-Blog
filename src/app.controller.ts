@@ -6,8 +6,8 @@ import { LocalAuthGuard } from './auth/local.auth.guard';
 
 @Controller()
 export class AppController {
-  @Get("/")
+  @Get('/')
   async home() {
-    return "Welcome Home"
+    return 'Welcome Home';
   }
 }

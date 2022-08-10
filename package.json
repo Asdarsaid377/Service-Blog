@@ -31,6 +31,7 @@
     "@nestjs/platform-express": "^9.0.0",
     "@nestjs/platform-fastify": "^9.0.3",
     "@nestjs/sequelize": "^9.0.0",
+    "@nestjs/swagger": "^6.0.5",
     "@nestjs/typeorm": "^9.0.0",
     "@types/passport": "^1.0.9",
     "@types/passport-jwt": "^3.0.6",

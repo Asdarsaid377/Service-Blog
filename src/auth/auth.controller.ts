@@ -1,19 +1,38 @@
-import { Body, Controller, Delete, Get, HttpStatus, Post, Request } from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
 import { CreateUserDTO } from 'src/commons/dto/create.user.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
+import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
+import { LoginUserDto } from 'src/commons/dto/login.user.dto';
+import { LoginErrorException } from 'src/commons/exceptions/login-error-exception';
+import { TokenLoginResponseInterface } from 'src/commons/interfaces/token-response.interface';
 
-@Controller('users')
+@Controller('auth')
+@ApiTags('Auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService, private usersService: UsersService) { }
+  constructor(
+    private readonly authService: AuthService,
+    private usersService: UsersService,
+  ) {}
 
   @Post('/login')
-  async login(@Request() req): Promise<any> {
-    let user = await this.authService.validateUser(req.body.username, req.body.password);
-    if (!user) {
-      return { username: "Username atau password salah" };
-    }
-    return this.authService.login(user) // Harus mengembalikan jwt  accest  token untuk mengakses endpoint yang lain 
+  @ApiOperation({ summary: 'Endpoint Login!' })
+  @ApiBody({
+    description: 'Endpoint ini untuk mendapatkan Response Token dari JWT',
+    schema: { default: { username: '', password: '' } },
+  })
+  async login(
+    @Body() data: LoginUserDto,
+  ): Promise<TokenLoginResponseInterface> {
+    const user = await this.authService.validateUser(
+      data.username,
+      data.password,
+    );
+    if (!user)
+      throw new LoginErrorException({
+        message: 'Username atau password salah',
+      });
+    return this.authService.chargePayload(user);
   }
 
   @Post('/register')
@@ -22,8 +41,7 @@ export class AuthController {
     return {
       statusCode: HttpStatus.OK,
       message: 'User created successfully',
-      user
+      user,
     };
   }
-
 }

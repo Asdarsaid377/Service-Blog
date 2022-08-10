@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 @Entity('Users')
 export class UsersEntity {
   @PrimaryGeneratedColumn()
@@ -39,5 +39,4 @@ export class UsersEntity {
 
   @Column()
   share_percentage: number;
-
 }

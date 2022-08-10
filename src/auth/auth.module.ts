@@ -8,13 +8,16 @@ import { LocalStrategy } from './local.strategy';
 import { AuthController } from './auth.controller';
 
 @Module({
-  imports: [UsersModule, PassportModule, JwtModule.register({
-    secret: "Halo",
-    signOptions: { expiresIn: '1000s' }
-  })],
+  imports: [
+    UsersModule,
+    PassportModule,
+    JwtModule.register({
+      secret: 'Halo',
+      signOptions: { expiresIn: '1000s' },
+    }),
+  ],
   providers: [AuthService, LocalStrategy, JwtStrategy],
   exports: [AuthService],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
-export class AuthModule {
-}
+export class AuthModule {}

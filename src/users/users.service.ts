@@ -1,16 +1,51 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersEntity } from '../commons/entity/user.entity';
 import { CreateUserDTO } from '../commons/dto/create.user.dto';
 import * as bcrypt from 'bcrypt';
+import { LoginUserDto } from 'src/commons/dto/login.user.dto';
+import { LoginErrorException } from 'src/commons/exceptions/login-error-exception';
+import { Role } from 'src/commons/enum/role.enum';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class UsersService {
+  private readonly loggerUser: Logger = new Logger(UsersService.name);
+
   constructor(
     @InjectRepository(UsersEntity)
     private usersRepository: Repository<UsersEntity>,
+    private jwtService: JwtService,
   ) {}
+
+  /**
+   * Function untuk login user dashboard
+   * @param data LoginUserDto
+   * @returns Promise<TokenLoginResponseInterface> Mengembalikan User dan atau false
+   */
+  async validateLoginUserDashboard(
+    data: LoginUserDto,
+  ): Promise<UsersEntity | false> {
+    const user = await this.usersRepository.findOne({
+      where: {
+        username: data.username,
+      },
+    });
+
+    if (!user) return false;
+    if (user.role === Role.Player)
+      throw new LoginErrorException({
+        status: 'failed',
+        message: `You haven't access`,
+      });
+
+    const match = await bcrypt.compareSync(data.password, user.password);
+    if (!match) return false;
+
+    this.loggerUser.log(`User ${user.username}[${user.role}]  logged in`);
+    return user;
+  }
 
   async showAll(): Promise<UsersEntity[]> {
     return await this.usersRepository.find();
@@ -32,7 +67,7 @@ export class UsersService {
     });
   }
 
-  async findByUsername(username: string): Promise<any> {
+  async findByUsername(username: string): Promise<UsersEntity | null> {
     try {
       const data = await this.usersRepository.findOne({
         where: {
@@ -40,7 +75,9 @@ export class UsersService {
         },
       });
       return data;
-    } catch (error) {}
+    } catch (error) {
+      return null;
+    }
   }
 
   async read(id: number) {
@@ -61,4 +98,27 @@ export class UsersService {
   async destroy(id: number) {
     return await this.usersRepository.delete(id);
   }
+
+  /**
+   *
+   * @param payload object dari user yg berhasil login  
+   * @returns mengembalikan token yg di generate oleh JWT
+   */
+  generateAccessToken(payload: any): string {
+    return this.jwtService.sign(payload);
+  }
+
+  /*
+    * @param payload object dari user yg berhasil login     
+    * @returns mengembalikan token yg di generate oleh JWT 
+    * 
+    * 
+    * */
+  login(user: UsersEntity) {
+    const payload = { username: user.username, sub: user.id };
+    return {
+      access_token: this.generateAccessToken(payload),
+    };
+  }
+
 }

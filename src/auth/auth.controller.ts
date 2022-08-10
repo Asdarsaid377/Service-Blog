@@ -1,6 +1,5 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, Post } from '@nestjs/common';
 import { CreateUserDTO } from 'src/commons/dto/create.user.dto';
-import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
 import { ApiBody, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { LoginUserDto } from 'src/commons/dto/login.user.dto';
@@ -10,10 +9,7 @@ import { TokenLoginResponseInterface } from 'src/commons/interfaces/token-respon
 @Controller('auth')
 @ApiTags('Auth')
 export class AuthController {
-  constructor(
-    private readonly authService: AuthService,
-    private usersService: UsersService,
-  ) {}
+  constructor(private readonly authService: AuthService) {}
 
   @Post('/login')
   @ApiOperation({ summary: 'Endpoint Login!' })
@@ -37,11 +33,11 @@ export class AuthController {
 
   @Post('/register')
   async createUsers(@Body() data: CreateUserDTO) {
-    const user = await this.usersService.create(data);
-    return {
-      statusCode: HttpStatus.OK,
-      message: 'User created successfully',
-      user,
-    };
+    // const user = await this.usersService.create(data);
+    // return {
+    //   statusCode: HttpStatus.OK,
+    //   message: 'User created successfully',
+    //   user,
+    // };
   }
 }

@@ -5,6 +5,9 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersEntity } from './commons/entity/user.entity';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import rsaconfig from './config/configuration';
+import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 
 @Module({
   imports: [
@@ -21,6 +24,26 @@ import { UsersEntity } from './commons/entity/user.entity';
     }),
     UsersModule,
     AuthModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+      load: [rsaconfig],
+    }),
+    JwtModule.registerAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => {
+        const options: JwtModuleOptions = {
+          privateKey: configService.get('privateKey'),
+          publicKey: configService.get('publicKey'),
+          signOptions: {
+            expiresIn: configService.get('TOKEN_EXPIRATION'),
+            issuer: configService.get('TOKEN_ISSUER'),
+            algorithm: 'RS256',
+          },
+        };
+        return options;
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

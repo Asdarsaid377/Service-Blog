@@ -1,0 +1,41 @@
+production:
+  sicbo:
+    host: '116.0.5.202'
+    port: 23122
+  baccarat:
+    host: '116.0.5.202'
+    port: 23125
+  qqnumber:
+    host: '116.0.5.202'
+    port: 8000
+  transaction:
+    host: '116.0.5.202'
+    port: 23121
+
+development:
+  sicbo:
+    host: '116.0.5.202'
+    port: 23122
+  baccarat:
+    host: '116.0.5.202'
+    port: 23125
+  qqnumber:
+    host: '116.0.5.202'
+    port: 8000
+  transaction:
+    host: '116.0.5.202'
+    port: 23121
+
+test:
+  sicbo:
+    host: 'localhost'
+    port: 8000
+  baccarat:
+    host: 'localhost'
+    port: 8000
+  qqnumber:
+    host: 'localhost'
+    port: 8000
+  transaction:
+    host: 'localhost'
+    port: 23121

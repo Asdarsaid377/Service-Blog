@@ -8,14 +8,26 @@ import {
   HttpStatus,
   UseGuards,
   Post,
+  HttpCode,
+  Logger,
+  ForbiddenException,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from '../commons/dto/create.user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { LoginUserDto } from 'src/commons/dto/login.user.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { LoginErrorException } from 'src/commons/exceptions/login-error-exception';
+import { chargePayload } from 'src/commons/utils/charge-payload.util';
+import { loginDashboardResponse } from 'src/commons/responses/login.response';
+import { Public } from 'src/commons/decorators/public.decorator';
 
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard) // Membatasi User Untuk Mengakses Endpoint Yang Beradah dibawah JwtAuthGuard SebelumLogin
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
+  private logger: Logger = new Logger(UsersController.name);
   constructor(private usersService: UsersService) {}
 
   @Get()
@@ -97,5 +109,22 @@ export class UsersController {
         message: 'User deleted successfully',
       };
     } catch (error) {}
+  }
+
+  /**
+   * @param data  : {username:string,password:string}
+   * @returns { status: boolean,token:string,role: string}
+   */
+  @Public()
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  async loginDashboard(@Body() data: LoginUserDto) {
+    let user = await this.usersService.validateLoginUserDashboard(data);
+    if (!user) throw new LoginErrorException('User not found');
+
+    let payload = chargePayload(user);
+    if (!payload) throw new LoginErrorException('Role user tidak diketahui');
+    let token = await this.usersService.generateAccessToken(payload);
+    return loginDashboardResponse(user, token);
   }
 }

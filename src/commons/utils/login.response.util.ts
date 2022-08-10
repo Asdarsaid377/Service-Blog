@@ -1,6 +1,9 @@
 import { UsersEntity } from '../entity/user.entity';
 
-export const loginDashboardResponse = (user: UsersEntity, token: string) => {
+export const loginDashboardResponseUtil = (
+  user: UsersEntity,
+  token: string,
+) => {
   return {
     status: 'success',
     token,

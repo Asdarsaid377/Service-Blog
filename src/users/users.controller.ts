@@ -7,16 +7,17 @@ import {
   Param,
   HttpStatus,
   UseGuards,
-  Post
+  Post,
 } from '@nestjs/common';
-import { UsersService } from "./users.service"
-import { CreateUserDTO } from '../commons/dto/create.user.dto';
+import { UsersService } from './users.service';
+import { CreateUserDTO } from '../commons/dto/user/create.user.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { EditUserDTO } from 'src/commons/dto/user/edit.user.dto';
 
-@UseGuards(JwtAuthGuard) // Membatasi User Untuk Mengakses Endpoint Yang Beradah dibawah JwtAuthGuard SebelumLogin 
+@UseGuards(JwtAuthGuard) // Membatasi User Untuk Mengakses Endpoint Yang Beradah dibawah JwtAuthGuard SebelumLogin
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) { }
+  constructor(private usersService: UsersService) {}
 
   @Get()
   async showAllUsers() {
@@ -24,7 +25,7 @@ export class UsersController {
     return {
       statusCode: HttpStatus.OK,
       message: 'Users fetched successfully',
-      users
+      users,
     };
   }
 
@@ -33,27 +34,25 @@ export class UsersController {
     try {
       const data = await this.usersService.read(id);
       return {
-        data
+        data,
       };
     } catch (error) {
       return {
-        error
+        error,
       };
     }
-
   }
 
-  @Get("username/:username")
-  async findUserByUsername(@Param("username") username: string) {
+  @Get('username/:username')
+  async findUserByUsername(@Param('username') username: string) {
     try {
       const data = await this.usersService.findByUsername(username);
       return {
-        data
+        data,
       };
     } catch (error) {
       throw new Error(error);
     }
-
   }
 
   @Post()
@@ -65,13 +64,11 @@ export class UsersController {
       user,
     };
   }
-
-  //Dapat data berdasarkan id
-
-
-  //edit data
   @Patch(':id')
-  async uppdateUser(@Param('id') id: number, @Body() data: Partial<CreateUserDTO>) {
+  async uppdateUser(
+    @Param('id') id: number,
+    @Body() data: Partial<EditUserDTO>,
+  ) {
     await this.usersService.update(id, data);
     return {
       statusCode: HttpStatus.OK,
@@ -79,7 +76,6 @@ export class UsersController {
       data,
     };
   }
-
 
   //Delete data berdasarkan id
   @Delete(':id')
@@ -97,8 +93,6 @@ export class UsersController {
         statusCode: HttpStatus.OK,
         message: 'User deleted successfully',
       };
-    } catch (error) {
-
-    }
+    } catch (error) {}
   }
-} 
+}

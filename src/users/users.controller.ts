@@ -37,9 +37,7 @@ export class UsersController {
         data,
       };
     } catch (error) {
-      return {
-        error,
-      };
+      return HttpStatus.NOT_FOUND;
     }
   }
 
@@ -80,19 +78,10 @@ export class UsersController {
   //Delete data berdasarkan id
   @Delete(':id')
   async deleteUser(@Param('id') id: number) {
-    try {
-      const user = await this.usersService.read(id);
-      if (!user) {
-        return {
-          statusCode: HttpStatus.NOT_FOUND,
-          message: 'Id User Not Found',
-        };
-      }
-      await this.usersService.destroy(id);
-      return {
-        statusCode: HttpStatus.OK,
-        message: 'User deleted successfully',
-      };
-    } catch (error) {}
+    await this.usersService.destroy(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'User deleted successfully',
+    };
   }
 }

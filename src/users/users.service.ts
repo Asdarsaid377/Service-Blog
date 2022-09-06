@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UsersEntity } from '../commons/entity/user.entity';
@@ -14,7 +14,9 @@ export class UsersService {
   ) {}
 
   async showAll(): Promise<UsersEntity[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.find({
+      select: ['id', 'username'],
+    });
   }
 
   async create(data: CreateUserDTO) {
@@ -45,11 +47,16 @@ export class UsersService {
   }
 
   async read(id: number) {
-    return await this.usersRepository.findOne({
-      where: {
-        id: id,
-      },
-    });
+    try {
+      const data = await this.usersRepository.findOne({
+        where: {
+          id: id,
+        },
+      });
+      return data;
+    } catch (error) {
+      throw new HttpException('User not found', 404);
+    }
   }
 
   async update(id: number, data: Partial<EditUserDTO>) {

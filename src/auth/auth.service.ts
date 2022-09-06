@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
-import { Base64 } from 'js-base64';
 import { LoginUser } from '../commons/dto/login.user.dto';
 import * as bcrypt from 'bcrypt';
 
@@ -35,7 +34,7 @@ export class AuthService {
       email: user.email,
       sub: user.id,
     };
-    const token = this.jwtService.sign(payload);
-    return { acces_token: null };
+    let token = this.jwtService.sign(payload);
+    return (token = null);
   }
 }

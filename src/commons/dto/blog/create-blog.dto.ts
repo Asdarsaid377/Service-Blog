@@ -14,4 +14,7 @@ export class CreateBlogDto {
   @IsString()
   @IsNotEmpty()
   tumbnail: string;
+
+  @IsNotEmpty()
+  user: number;
 }

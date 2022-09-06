@@ -40,7 +40,6 @@
     "class-transformer": "^0.5.1",
     "dotenv": "^16.0.1",
     "express-session": "^1.17.3",
-    "fastify": "^4.2.1",
     "js-base64": "^3.7.2",
     "jwt-passport": "^0.0.5",
     "mysql": "^2.18.1",

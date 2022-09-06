@@ -19,6 +19,7 @@ import { BlogEntity } from './commons/entity/blog.entity';
       password: '', // password
       database: 'Blog', // nama database
       synchronize: false, // true jika ingin menambahkan table baru secara otomatis
+      autoLoadEntities: true, // true jika ingin menambahkan entity baru secara otomatis
       entities: [UsersEntity, BlogEntity], //Table Yang digunakan pada database
     }),
     UsersModule,

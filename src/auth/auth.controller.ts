@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  HttpStatus,
-  Post,
-  Request,
-} from '@nestjs/common';
+import { Body, Controller, HttpStatus, Post, Request } from '@nestjs/common';
 import { CreateUserDTO } from 'src/commons/dto/user/create.user.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
@@ -38,5 +30,10 @@ export class AuthController {
       message: 'User created successfully',
       user,
     };
+  }
+
+  @Post('/logout')
+  async logout(@Request() req) {
+    return this.authService.logout(req.user);
   }
 }

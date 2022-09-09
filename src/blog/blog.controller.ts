@@ -50,6 +50,13 @@ export class BlogController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
+    const blog = this.blogService.findOne(+id);
+    if (!blog) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'blog not found',
+      };
+    }
     return this.blogService.remove(+id);
   }
 }

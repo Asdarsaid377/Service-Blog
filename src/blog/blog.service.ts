@@ -18,8 +18,8 @@ export class BlogService {
 
   async findAll(): Promise<BlogEntity[]> {
     return await this.blogRepository.find({
-      select: ['judul', 'konten', 'tumbnail', 'user'],
-      relations: []
+      
+      relations: ['user'],
     });
   }
 

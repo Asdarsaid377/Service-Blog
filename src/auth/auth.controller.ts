@@ -1,4 +1,12 @@
-import { Body, Controller, HttpStatus, Post, Request } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpException,
+  HttpStatus,
+  Post,
+  Request,
+  Response,
+} from '@nestjs/common';
 import { CreateUserDTO } from 'src/commons/dto/user/create.user.dto';
 import { UsersService } from 'src/users/users.service';
 import { AuthService } from './auth.service';
@@ -11,15 +19,24 @@ export class AuthController {
   ) {}
 
   @Post('/login')
-  async login(@Request() req): Promise<any> {
-    let user = await this.authService.validateUser(
-      req.body.username,
-      req.body.password,
-    );
-    if (!user) {
-      return { username: 'Username atau password salah' };
+  async login(
+    @Response({ passthrough: true }) response,
+    @Request() req,
+  ): Promise<any> {
+    try {
+      let user = await this.authService.validateUser(
+        req.body.username,
+        req.body.password,
+      );
+      if (!user) {
+        return { message: 'Username atau password salah' };
+      }
+      let token = await this.authService.login(user);
+      response.cookie('acces_token', token.acces_token);
+      return this.authService.login(user);
+    } catch (error) {
+      throw new HttpException('User not found', 404);
     }
-    return this.authService.login(user); // Harus mengembalikan jwt  accest  token untuk mengakses endpoint yang lain
   }
 
   @Post('/register')

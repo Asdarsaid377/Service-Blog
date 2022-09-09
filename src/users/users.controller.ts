@@ -25,7 +25,7 @@ export class UsersController {
     return {
       statusCode: HttpStatus.OK,
       message: 'Users fetched successfully',
-      users,
+      data: users,
     };
   }
 
@@ -34,22 +34,23 @@ export class UsersController {
     try {
       const data = await this.usersService.read(id);
       return {
+        statusCode: HttpStatus.OK,
         data,
       };
     } catch (error) {
       return HttpStatus.NOT_FOUND;
     }
   }
-
   @Get('username/:username')
   async findUserByUsername(@Param('username') username: string) {
     try {
       const data = await this.usersService.findByUsername(username);
       return {
+        statusCode: HttpStatus.OK,
         data,
       };
     } catch (error) {
-      throw new Error(error);
+      throw HttpStatus.NOT_FOUND;
     }
   }
 
@@ -63,7 +64,7 @@ export class UsersController {
     };
   }
   @Patch(':id')
-  async uppdateUser(
+  async updateUser(
     @Param('id') id: number,
     @Body() data: Partial<EditUserDTO>,
   ) {
@@ -75,9 +76,15 @@ export class UsersController {
     };
   }
 
-  //Delete data berdasarkan id
   @Delete(':id')
   async deleteUser(@Param('id') id: number) {
+    const user = await this.usersService.read(id);
+    if (!user) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'User not found',
+      };
+    }
     await this.usersService.destroy(id);
     return {
       statusCode: HttpStatus.OK,

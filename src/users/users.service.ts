@@ -14,11 +14,9 @@ export class UsersService {
   ) {}
 
   async showAll(): Promise<UsersEntity[]> {
-    return await this.usersRepository.find({
-      select: ['id', 'username'],
-    });
+    return await this.usersRepository.find();
   }
-
+  
   async create(data: CreateUserDTO) {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(data.password, salt);

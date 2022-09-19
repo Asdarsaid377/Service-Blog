@@ -44,7 +44,18 @@ export class BlogController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateBlogDto: UpdateBlogDto) {
-    return this.blogService.update(+id, updateBlogDto);
+    const blog = this.blogService.findOne(+id);
+    if (!blog) {
+      return {
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'blog not found',
+      };
+    }
+    const update = this.blogService.update(+id, updateBlogDto);
+    return {
+      message: `blog with id ${id} updated`,
+      update: update,
+    };
   }
 
   @UseGuards(JwtAuthGuard)

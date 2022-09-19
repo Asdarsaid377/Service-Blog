@@ -12,13 +12,13 @@ import { BlogEntity } from './commons/entity/blog.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'mysql',
+      type: 'mariadb',
       host: process.env.DATABASE_HOST,
-      port: 3306, // default 3306
+      port: parseInt(process.env.DATABASE_PORT), // default 3306
       username: 'root', // username database
-      password: '', // password
+      password: 'root', // password
       database: 'Blog', // nama database
-      synchronize: false, // true jika ingin menambahkan table baru secara otomatis
+      synchronize: true, // true jika ingin menambahkan table baru secara otomatis
       autoLoadEntities: true, // true jika ingin menambahkan entity baru secara otomatis
       entities: [UsersEntity, BlogEntity], //Table Yang digunakan pada database
     }),

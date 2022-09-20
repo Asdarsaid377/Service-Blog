@@ -8,6 +8,7 @@ import {
   HttpStatus,
   UseGuards,
   Post,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDTO } from '../commons/dto/user/create.user.dto';
@@ -30,7 +31,7 @@ export class UsersController {
   }
 
   @Get(':id')
-  async readUser(@Param('id') id: number) {
+  async readUser(@Param('id', ParseIntPipe) id: number) {
     try {
       const data = await this.usersService.read(id);
       return {
